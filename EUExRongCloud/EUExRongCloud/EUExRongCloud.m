@@ -202,7 +202,7 @@
 
         
     }
-    if ([objectName isEqualToString:RCCommandMessageIdentifier]) {//命令消息,@"RC:CmdNtf"
+    if ([objectName isEqualToString:RCCommandMessageIdentifier]) {//命令消息,@"RC:CmdMsg"
         RCCommandMessage *message = [RCCommandMessage messageWithName:[info objectForKey:@"name"] data:[info objectForKey:@"data"]] ;
        RCMessage *mes = [self.RCManager.SDK sendMessage:type targetId:targetId content:message pushContent:nil pushData:nil success:^(long messageId) {
             result[@"localId"] = @(localId);
@@ -222,7 +222,6 @@
             [self.RCManager callBackJsonWithFunction:@"cbSendMessage" parameter:result];
         }
     }
-    
     
 }
 -(NSString *)getConversationList:(NSMutableArray *)inArguments{
@@ -280,8 +279,6 @@
                 content[@"imgPath"] = mes.imageURL;
                 content[@"url"] = mes.url;
                 content[@"extra"] = mes.extra;
-                
-                
             }
             if ([con isKindOfClass:[RCLocationMessage class]]) {//位置消息
                 RCLocationMessage *mes = (RCLocationMessage*)con;
@@ -711,7 +708,7 @@
     NSInteger receivedStatus = [[info objectForKey:@"receivedStatus"] integerValue];
     BOOL state = [self.RCManager.SDK setMessageReceivedStatus:messageId receivedStatus:receivedStatus];
     result[@"resultCode"] = @(state?0:1);
-    [self.RCManager callBackJsonWithFunction:@"cbSetMessageReceivedStatus" parameter:result];
+    //[self.RCManager callBackJsonWithFunction:@"cbSetMessageReceivedStatus" parameter:result];
     
     
 }
@@ -725,7 +722,7 @@
     NSMutableDictionary *result=[NSMutableDictionary dictionary];
     BOOL state = [self.RCManager.SDK clearMessages:type targetId:targetId];
     result[@"resultCode"] = @(state?0:1);
-    [self.RCManager callBackJsonWithFunction:@"cbClearMessagesUnreadStatus" parameter:result];
+    //[self.RCManager callBackJsonWithFunction:@"cbClearMessagesUnreadStatus" parameter:result];
 
 }
 /*
