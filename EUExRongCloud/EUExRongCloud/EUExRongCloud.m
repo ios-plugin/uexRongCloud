@@ -28,7 +28,7 @@
 }
 
 #pragma mark -1.registerApp
--(void) init:(NSMutableArray *)inArguments{
+-(void)init:(NSMutableArray *)inArguments{
     if(inArguments.count<1){
         return;
     }
@@ -128,9 +128,10 @@
         
     }
     if ([objectName isEqualToString:RCImageMessageTypeIdentifier]) {//图片消息,@"RC:ImgMsg"
-        RCImageMessage *message=[RCImageMessage messageWithImageURI:[self absPath:[info objectForKey:@"imgPath"]]];
+        UIImage *image = [UIImage imageWithContentsOfFile:[self absPath:[info objectForKey:@"imgPath"]]];
+        RCImageMessage *message=[RCImageMessage messageWithImage:image];
         message.extra = extra;
-       RCMessage *mes = [self.RCManager.SDK sendImageMessage:type targetId:targetId content:message pushContent:nil pushData:nil progress:^(int progress, long messageId) {
+        RCMessage *mes = [self.RCManager.SDK sendImageMessage:type targetId:targetId content:message pushContent:nil pushData:nil progress:^(int progress, long messageId) {
             result[@"localId"] = @(localId);
             result[@"messageId"] = @(messageId);
             result[@"resultCode"]=@(3);
