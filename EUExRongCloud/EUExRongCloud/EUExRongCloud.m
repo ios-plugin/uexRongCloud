@@ -646,8 +646,13 @@
     id info=[inArguments[0] JSONValue];
     NSMutableDictionary *result=[NSMutableDictionary dictionary];
     NSArray *array = [info objectForKey:@"messageIds"];
+    NSMutableArray *arrays = [NSMutableArray array];
+    for (id n in array) {
+        NSNumber *num = @([n integerValue]);
+        [arrays addObject:num];
+    }
     if ([self.RCManager.SDK respondsToSelector:@selector(deleteMessages:)]) {
-        BOOL state = [self.RCManager.SDK deleteMessages:array];
+        BOOL state = [self.RCManager.SDK deleteMessages:[arrays copy]];
         result[@"resultCode"] = state?@(0):@(1);
          [self.RCManager callBackJsonWithFunction:@"cbDeleteMessages" parameter:result];
     }else{
