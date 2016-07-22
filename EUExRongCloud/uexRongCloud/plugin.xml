@@ -19,7 +19,6 @@
         <method name="getUnreadCount" sync = "true"></method>
         <method name="getUnreadCountByConversationTypes" sync = "true"></method>
         <method name="setMessageReceivedStatus"></method>
-        <method name="clearMessagesUnreadStatus"></method>
     </plugin>
     
 </uexplugins>

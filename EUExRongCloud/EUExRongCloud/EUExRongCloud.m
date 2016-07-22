@@ -52,7 +52,7 @@
         [self.RCManager callBackJsonWithFunction:@"cbConnect" parameter:result];
     } tokenIncorrect:^{
         NSLog(@"connect---tokenIncorrect");
-        result[@"resultCode"] = @(31004);//@(31005);
+        result[@"resultCode"] = @(-1);
         [self.RCManager callBackJsonWithFunction:@"cbConnect" parameter:result];
     }];
 }
@@ -157,7 +157,7 @@
 
     }
     if ([objectName isEqualToString:RCRichContentMessageTypeIdentifier]) {//图文消息,@"RC:ImgTextMsg"
-        RCRichContentMessage *message = [RCRichContentMessage messageWithTitle:[info objectForKey:@"title"] digest:[info objectForKey:@"description"] imageURL:[info objectForKey:@"imgUrl"] url:[info objectForKey:@"url"] extra:[info objectForKey:@"extra"]];
+        RCRichContentMessage *message = [RCRichContentMessage messageWithTitle:[info objectForKey:@"title"] digest:[info objectForKey:@"description"] imageURL:[info objectForKey:@"imgPath"] url:[info objectForKey:@"url"] extra:[info objectForKey:@"extra"]];
       RCMessage *mes =  [self.RCManager.SDK sendMessage:type targetId:targetId content:message pushContent:nil pushData:nil success:^(long messageId) {
             result[@"localId"] = @(localId);
             result[@"messageId"] = @(messageId);
@@ -718,19 +718,19 @@
     
     
 }
--(void)clearMessagesUnreadStatus:(NSMutableArray *)inArguments{//清除某一会话的消息未读状态
-    if(inArguments.count<1){
-        return;
-    }
-    id info=[inArguments[0] JSONValue];
-    NSInteger type = [self convertFromString:[info objectForKey:@"conversationType"]];
-    NSString *targetId = [info objectForKey:@"targetId"];
-    NSMutableDictionary *result=[NSMutableDictionary dictionary];
-    BOOL state = [self.RCManager.SDK clearMessages:type targetId:targetId];
-    result[@"resultCode"] = @(state?0:1);
-    //[self.RCManager callBackJsonWithFunction:@"cbClearMessagesUnreadStatus" parameter:result];
-
-}
+//-(void)clearMessagesUnreadStatus:(NSMutableArray *)inArguments{//清除某一会话的消息未读状态
+//    if(inArguments.count<1){
+//        return;
+//    }
+//    id info=[inArguments[0] JSONValue];
+//    NSInteger type = [self convertFromString:[info objectForKey:@"conversationType"]];
+//    NSString *targetId = [info objectForKey:@"targetId"];
+//    NSMutableDictionary *result=[NSMutableDictionary dictionary];
+//    BOOL state = [self.RCManager.SDK clearMessages:type targetId:targetId];
+//    result[@"resultCode"] = @(state?0:1);
+//    //[self.RCManager callBackJsonWithFunction:@"cbClearMessagesUnreadStatus" parameter:result];
+//
+//}
 /*
 #pragma mark - -4黑名单
 -(void)addToBlacklist:(NSMutableArray *)inArguments{

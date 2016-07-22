@@ -39,7 +39,6 @@
     }
     else{
         result[@"result"] =@(NO);
-        [result setValue:@(1) forKey:@"error"];
     }
     
     [self callBackJsonWithFunction:@"cbInit" parameter:result];
