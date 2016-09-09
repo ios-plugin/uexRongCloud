@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <uexplugins>
     <plugin
-        uexName="uexRongCloud" version="3.0.0" build="1">
-        <info>0:新增融云插件</info>
-        <build>1:更换sdk版本为2.6.10</build>
+        uexName="uexRongCloud" version="4.0.0" build="0">
+        <info>0:插件4.0</info>
     </plugin>
 </uexplugins>

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		216C00151D813534009F44D4 /* AppCanKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 216C00141D813534009F44D4 /* AppCanKit.framework */; };
 		21A179A51D615CCD00E86E68 /* libopencore-amrnb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 21A179A41D615CCD00E86E68 /* libopencore-amrnb.a */; };
 		21A179A71D615CD500E86E68 /* RongIMLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21A179A61D615CD500E86E68 /* RongIMLib.framework */; };
 		3CB479481CA0E0B400F7AC1A /* EUExRongCloud.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CB479471CA0E0B400F7AC1A /* EUExRongCloud.m */; };
@@ -26,25 +27,16 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		216C00141D813534009F44D4 /* AppCanKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AppCanKit.framework; sourceTree = "<group>"; };
 		21A179A41D615CCD00E86E68 /* libopencore-amrnb.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libopencore-amrnb.a"; sourceTree = "<group>"; };
 		21A179A61D615CD500E86E68 /* RongIMLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RongIMLib.framework; sourceTree = "<group>"; };
 		3CB479421CA0E0B400F7AC1A /* libuexRongCloud.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libuexRongCloud.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CB479451CA0E0B400F7AC1A /* EUExRongCloud.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EUExRongCloud.h; sourceTree = "<group>"; };
 		3CB479471CA0E0B400F7AC1A /* EUExRongCloud.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EUExRongCloud.m; sourceTree = "<group>"; };
 		3CB4794F1CA0E0CC00F7AC1A /* EUExBase+Bundle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EUExBase+Bundle.h"; sourceTree = "<group>"; };
-		3CB479501CA0E0CC00F7AC1A /* EUExBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EUExBase.h; sourceTree = "<group>"; };
 		3CB479511CA0E0CC00F7AC1A /* EUExBaseDefine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EUExBaseDefine.h; sourceTree = "<group>"; };
 		3CB479521CA0E0CC00F7AC1A /* EUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EUtility.h; sourceTree = "<group>"; };
 		3CB479531CA0E0CC00F7AC1A /* WidgetOneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WidgetOneDelegate.h; sourceTree = "<group>"; };
-		3CB479551CA0E0CC00F7AC1A /* JSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
-		3CB479561CA0E0CC00F7AC1A /* JSONParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSONParser.h; sourceTree = "<group>"; };
-		3CB479571CA0E0CC00F7AC1A /* MD5Digest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MD5Digest.h; sourceTree = "<group>"; };
-		3CB479581CA0E0CC00F7AC1A /* NSObject+SBJSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJSON.h"; sourceTree = "<group>"; };
-		3CB479591CA0E0CC00F7AC1A /* NSString+SBJSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+SBJSON.h"; sourceTree = "<group>"; };
-		3CB4795A1CA0E0CC00F7AC1A /* SBJSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SBJSON.h; sourceTree = "<group>"; };
-		3CB4795B1CA0E0CC00F7AC1A /* SBJsonBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SBJsonBase.h; sourceTree = "<group>"; };
-		3CB4795C1CA0E0CC00F7AC1A /* SBJsonParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SBJsonParser.h; sourceTree = "<group>"; };
-		3CB4795D1CA0E0CC00F7AC1A /* SBJsonWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		3CB479601CA0E0CC00F7AC1A /* EUExRongCloud-PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EUExRongCloud-PrefixHeader.pch"; sourceTree = "<group>"; };
 		3CF3F82B1CA2384B00975491 /* uexRCManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = uexRCManager.m; sourceTree = "<group>"; };
 		3CF3F82E1CA2394800975491 /* uexRCManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uexRCManager.h; sourceTree = "<group>"; };
@@ -56,6 +48,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				21A179A71D615CD500E86E68 /* RongIMLib.framework in Frameworks */,
+				216C00151D813534009F44D4 /* AppCanKit.framework in Frameworks */,
 				21A179A51D615CCD00E86E68 /* libopencore-amrnb.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -83,7 +76,6 @@
 			isa = PBXGroup;
 			children = (
 				3CB4794E1CA0E0CC00F7AC1A /* engineHeader */,
-				3CB479541CA0E0CC00F7AC1A /* JSON */,
 				3CB4795E1CA0E0CC00F7AC1A /* sourceCode */,
 				3CB479451CA0E0B400F7AC1A /* EUExRongCloud.h */,
 				3CB479471CA0E0B400F7AC1A /* EUExRongCloud.m */,
@@ -95,7 +87,6 @@
 			isa = PBXGroup;
 			children = (
 				3CB4794F1CA0E0CC00F7AC1A /* EUExBase+Bundle.h */,
-				3CB479501CA0E0CC00F7AC1A /* EUExBase.h */,
 				3CB479511CA0E0CC00F7AC1A /* EUExBaseDefine.h */,
 				3CB479521CA0E0CC00F7AC1A /* EUtility.h */,
 				3CB479531CA0E0CC00F7AC1A /* WidgetOneDelegate.h */,
@@ -103,25 +94,10 @@
 			path = engineHeader;
 			sourceTree = "<group>";
 		};
-		3CB479541CA0E0CC00F7AC1A /* JSON */ = {
-			isa = PBXGroup;
-			children = (
-				3CB479551CA0E0CC00F7AC1A /* JSON.h */,
-				3CB479561CA0E0CC00F7AC1A /* JSONParser.h */,
-				3CB479571CA0E0CC00F7AC1A /* MD5Digest.h */,
-				3CB479581CA0E0CC00F7AC1A /* NSObject+SBJSON.h */,
-				3CB479591CA0E0CC00F7AC1A /* NSString+SBJSON.h */,
-				3CB4795A1CA0E0CC00F7AC1A /* SBJSON.h */,
-				3CB4795B1CA0E0CC00F7AC1A /* SBJsonBase.h */,
-				3CB4795C1CA0E0CC00F7AC1A /* SBJsonParser.h */,
-				3CB4795D1CA0E0CC00F7AC1A /* SBJsonWriter.h */,
-			);
-			path = JSON;
-			sourceTree = "<group>";
-		};
 		3CB4795E1CA0E0CC00F7AC1A /* sourceCode */ = {
 			isa = PBXGroup;
 			children = (
+				216C00141D813534009F44D4 /* AppCanKit.framework */,
 				21A179A61D615CD500E86E68 /* RongIMLib.framework */,
 				21A179A41D615CCD00E86E68 /* libopencore-amrnb.a */,
 				3CB479601CA0E0CC00F7AC1A /* EUExRongCloud-PrefixHeader.pch */,

@@ -18,22 +18,20 @@
 
 @implementation EUExRongCloud
 
--(id)initWithBrwView:(EBrowserView *) eInBrwView {
-    self = [super initWithBrwView:eInBrwView];
-    if (self) {
+-(id)initWithWebViewEngine:(id<AppCanWebViewEngineObject>)engine{
+    if (self = [super initWithWebViewEngine:engine]) {
         self.RCManager=[uexRCManager sharedInstance];
-
     }
     return self;
 }
-
 #pragma mark -1.registerApp
 -(void)init:(NSMutableArray *)inArguments{
     if(inArguments.count<1){
         return;
     }
-    id info=[inArguments[0] JSONValue];
-    [self.RCManager initWithAppKey:[info objectForKey:@"appKey"]];
+    //id info=[inArguments[0] ac_JSONValue];
+    ACArgsUnpack(NSDictionary *info, ACJSFunctionRef *func) = inArguments;
+    [self.RCManager initWithAppKey:[info objectForKey:@"appKey"] Function:func];
 }
 
 #pragma mark -2.登陆与登出
@@ -41,26 +39,31 @@
     if(inArguments.count<1){
         return;
     }
-    id info=[inArguments[0] JSONValue];
+    //id info=[inArguments[0] ac_JSONValue];
+    ACArgsUnpack(NSDictionary *info, ACJSFunctionRef*func) = inArguments;
     NSMutableDictionary *result=[NSMutableDictionary dictionary];
     [self.RCManager.SDK connectWithToken:[info objectForKey:@"token"] success:^(NSString *userId) {
         result[@"userId"] = userId;
         result[@"resultCode"] = @(0);
         [self.RCManager callBackJsonWithFunction:@"cbConnect" parameter:result];
+        [func executeWithArguments:ACArgsPack(@(0),userId)];
     } error:^(RCConnectErrorCode status) {
         result[@"resultCode"] = @(status);
         [self.RCManager callBackJsonWithFunction:@"cbConnect" parameter:result];
+        [func executeWithArguments:ACArgsPack(@(status))];
     } tokenIncorrect:^{
         NSLog(@"connect---tokenIncorrect");
         result[@"resultCode"] = @(-1);
         [self.RCManager callBackJsonWithFunction:@"cbConnect" parameter:result];
+        [func executeWithArguments:ACArgsPack(@(-1),@"token is incorrect")];
     }];
 }
--(void) disconnect:(NSMutableArray *)inArguments{
+-(void)disconnect:(NSMutableArray *)inArguments{
     if(inArguments.count<1){
         return;
     }
-    id info=[inArguments[0] JSONValue];
+    //id info=[inArguments[0] ac_JSONValue];
+    ACArgsUnpack(NSDictionary *info) = inArguments;
     [self.RCManager.SDK disconnect:[[info objectForKey:@"isReceivePush"] boolValue]];
 }
 
@@ -70,7 +73,8 @@
     if(inArguments.count<1){
         return;
     }
-    id info=[inArguments[0] JSONValue];
+    //id info=[inArguments[0] ac_JSONValue];
+    ACArgsUnpack(NSDictionary *info, ACJSFunctionRef*func) = inArguments;
     NSString *objectName = [info objectForKey:@"objectName"];
     NSInteger type = [self convertFromString:[info objectForKey:@"conversationType"]];
     NSString *targetId = [info objectForKey:@"targetId"];
@@ -90,17 +94,20 @@
             result[@"messageId"] = @(messageId);
             result[@"resultCode"]=@(1);
             [self.RCManager callBackJsonWithFunction:@"cbSendMessage" parameter:result];
+          [func executeWithArguments:ACArgsPack(@(1),@(messageId))];
         } error:^(RCErrorCode nErrorCode, long messageId) {
             result[@"localId"] = @(localId);
             result[@"messageId"] = @(messageId);
             result[@"resultCode"]=@(2);
             [self.RCManager callBackJsonWithFunction:@"cbSendMessage" parameter:result];
+            [func executeWithArguments:ACArgsPack(@(2),@(messageId))];
         }];
         if (mes) {
             result[@"localId"] = @(localId);
             result[@"messageId"] = @(mes.messageId);
             result[@"resultCode"]=@(0);
             [self.RCManager callBackJsonWithFunction:@"cbSendMessage" parameter:result];
+            [func executeWithArguments:ACArgsPack(@(0),@(mes.messageId))];
         }
 
     }
@@ -113,17 +120,20 @@
             result[@"messageId"] = @(messageId);
             result[@"resultCode"]=@(1);
             [self.RCManager callBackJsonWithFunction:@"cbSendMessage" parameter:result];
+            [func executeWithArguments:ACArgsPack(@(1),@(messageId))];
         } error:^(RCErrorCode nErrorCode, long messageId) {
             result[@"localId"] = @(localId);
             result[@"messageId"] = @(messageId);
             result[@"resultCode"]=@(2);
             [self.RCManager callBackJsonWithFunction:@"cbSendMessage" parameter:result];
+            [func executeWithArguments:ACArgsPack(@(2),@(messageId))];
         }];
         if (mes) {
             result[@"localId"] = @(localId);
             result[@"messageId"] = @(mes.messageId);
             result[@"resultCode"]=@(0);
             [self.RCManager callBackJsonWithFunction:@"cbSendMessage" parameter:result];
+            [func executeWithArguments:ACArgsPack(@(0),@(mes.messageId))];
         }
         
     }
@@ -131,12 +141,13 @@
         UIImage *image = [UIImage imageWithContentsOfFile:[self absPath:[info objectForKey:@"imgPath"]]];
         RCImageMessage *message=[RCImageMessage messageWithImage:image];
         message.extra = extra;
-        RCMessage *mes = [self.RCManager.SDK sendImageMessage:type targetId:targetId content:message pushContent:nil pushData:nil progress:^(int progress, long messageId) {
+         RCMessage *mes = [self.RCManager.SDK sendMediaMessage:type targetId:targetId content:message pushContent:nil  pushData:nil progress:^(int progress, long messageId) {
             result[@"localId"] = @(localId);
             result[@"messageId"] = @(messageId);
             result[@"resultCode"]=@(3);
             result[@"progress"] = @(progress);
             [self.RCManager callBackJsonWithFunction:@"cbSendMessage" parameter:result];
+            [func executeWithArguments:ACArgsPack(@(1),@(messageId))];
         } success:^(long messageId) {
             result[@"localId"] = @(localId);
             result[@"messageId"] = @(messageId);
@@ -147,12 +158,14 @@
             result[@"messageId"] = @(messageId);
             result[@"resultCode"]=@(2);
             [self.RCManager callBackJsonWithFunction:@"cbSendMessage" parameter:result];
+            [func executeWithArguments:ACArgsPack(@(2),@(messageId))];
         }];
         if (mes) {
             result[@"localId"] = @(localId);
             result[@"messageId"] = @(mes.messageId);
             result[@"resultCode"]=@(0);
             [self.RCManager callBackJsonWithFunction:@"cbSendMessage" parameter:result];
+            [func executeWithArguments:ACArgsPack(@(0),@(mes.messageId))];
         }
 
     }
@@ -163,17 +176,20 @@
             result[@"messageId"] = @(messageId);
             result[@"resultCode"]=@(1);
             [self.RCManager callBackJsonWithFunction:@"cbSendMessage" parameter:result];
+           [func executeWithArguments:ACArgsPack(@(1),@(messageId))];
         } error:^(RCErrorCode nErrorCode, long messageId) {
             result[@"localId"] = @(localId);
             result[@"messageId"] = @(messageId);
             result[@"resultCode"]=@(2);
             [self.RCManager callBackJsonWithFunction:@"cbSendMessage" parameter:result];
+            [func executeWithArguments:ACArgsPack(@(2),@(messageId))];
         }];
         if (mes) {
             result[@"localId"] = @(localId);
             result[@"messageId"] = @(mes.messageId);
             result[@"resultCode"]=@(0);
             [self.RCManager callBackJsonWithFunction:@"cbSendMessage" parameter:result];
+            [func executeWithArguments:ACArgsPack(@(0),@(mes.messageId))];
         }
         
     }
@@ -186,12 +202,14 @@
             result[@"messageId"] = @(messageId);
             result[@"resultCode"]=@(1);
             [self.RCManager callBackJsonWithFunction:@"cbSendMessage" parameter:result];
+           [func executeWithArguments:ACArgsPack(@(1),@(messageId))];
 
         } error:^(RCErrorCode nErrorCode, long messageId) {
             result[@"localId"] = @(localId);
             result[@"messageId"] = @(messageId);
             result[@"resultCode"]=@(2);
             [self.RCManager callBackJsonWithFunction:@"cbSendMessage" parameter:result];
+            [func executeWithArguments:ACArgsPack(@(2),@(messageId))];
 
         }];
         if (mes) {
@@ -199,8 +217,9 @@
             result[@"messageId"] = @(mes.messageId);
             result[@"resultCode"]=@(0);
             [self.RCManager callBackJsonWithFunction:@"cbSendMessage" parameter:result];
+            [func executeWithArguments:ACArgsPack(@(0),@(mes.messageId))];
         }
-
+    
         
     }
     if ([objectName isEqualToString:RCCommandMessageIdentifier]) {//命令消息,@"RC:CmdMsg"
@@ -210,17 +229,20 @@
             result[@"messageId"] = @(messageId);
             result[@"resultCode"]=@(1);
             [self.RCManager callBackJsonWithFunction:@"cbSendMessage" parameter:result];
+            [func executeWithArguments:ACArgsPack(@(1),@(messageId))];
         } error:^(RCErrorCode nErrorCode, long messageId) {
             result[@"localId"] = @(localId);
             result[@"messageId"] = @(messageId);
             result[@"resultCode"]=@(2);
             [self.RCManager callBackJsonWithFunction:@"cbSendMessage" parameter:result];
+            [func executeWithArguments:ACArgsPack(@(2),@(messageId))];
         }];
         if (mes) {
             result[@"localId"] = @(localId);
             result[@"messageId"] = @(mes.messageId);
             result[@"resultCode"]=@(0);
             [self.RCManager callBackJsonWithFunction:@"cbSendMessage" parameter:result];
+            [func executeWithArguments:ACArgsPack(@(0),@(mes.messageId))];
         }
     }
     
@@ -300,10 +322,10 @@
         [result setValue:@(0) forKey:@"resultCode"];
         [result setValue:arr forKey:@"conversations"];
         NSLog(@"result:%@",result);
-        return [result JSONFragment] ;
+        return [result ac_JSONFragment] ;
     }else{
         [result setValue:@(1) forKey:@"resultCode"];
-        return [result JSONFragment];
+        return [result ac_JSONFragment];
     }
     
 }
@@ -311,7 +333,8 @@
     if(inArguments.count<1){
         return nil;
     }
-    id info=[inArguments[0] JSONValue];
+    //id info=[inArguments[0] JSONValue];
+    ACArgsUnpack(NSDictionary *info) = inArguments;
     NSMutableDictionary *dic = [NSMutableDictionary dictionary];
     NSMutableDictionary *dic1 = [NSMutableDictionary dictionary];
     NSInteger type = [self convertFromString:[info objectForKey:@"conversationType"]];
@@ -375,10 +398,10 @@
          dic[@"sentTime"] = @(conversation.sentTime);
          dic[@"isTop"] = @(conversation.isTop);
          dic[@"latestMessageId"] = @(conversation.lastestMessageId);
-         return [dic JSONFragment];
+         return [dic ac_JSONFragment];
      }else{
          dic[@"resultCode"] = @(1);
-         return [dic JSONFragment];
+         return [dic ac_JSONFragment];
      }
    
 }
@@ -386,7 +409,8 @@
     if(inArguments.count<1){
         return;
     }
-    id info=[inArguments[0] JSONValue];
+    //id info=[inArguments[0] ac_JSONValue];
+    ACArgsUnpack(NSDictionary *info, ACJSFunctionRef*func) = inArguments;
     NSInteger type = [self convertFromString:[info objectForKey:@"conversationType"]];
     if (type == 0) {
         return;
@@ -396,9 +420,11 @@
       BOOL state = [self.RCManager.SDK removeConversation:type targetId:[info objectForKey:@"targetId"]];
         result[@"resultCode"] = state?@(0):@(1);
          [self.RCManager callBackJsonWithFunction:@"cbRemoveConversation" parameter:result];
+        [func executeWithArguments:ACArgsPack(state?@(0):@(1))];
     }else{
         result[@"resultCode"] = @(2);
         [self.RCManager callBackJsonWithFunction:@"cbRemoveConversation" parameter:result];
+        [func executeWithArguments:ACArgsPack(@(2))];
     }
     
 }
@@ -407,7 +433,8 @@
     if(inArguments.count<1){
         return;
     }
-    id info=[inArguments[0] JSONValue];
+    //id info=[inArguments[0] JSONValue];
+    ACArgsUnpack(NSDictionary *info, ACJSFunctionRef*func) = inArguments;
     NSArray *array = [info objectForKey:@"conversationTypes"];
     if (array.count<1) {
         return;
@@ -422,9 +449,11 @@
         BOOL state = [self.RCManager.SDK clearConversations:arr];
         result[@"resultCode"] = state?@(0):@(1);
         [self.RCManager callBackJsonWithFunction:@"cbClearConversations" parameter:result];
+        [func executeWithArguments:ACArgsPack(state?@(0):@(1))];
     }else{
         result[@"resultCode"] = @(2);
         [self.RCManager callBackJsonWithFunction:@"cbClearConversations" parameter:result];
+         [func executeWithArguments:ACArgsPack(@(2))];
     }
    
     
@@ -433,16 +462,19 @@
     if(inArguments.count<1){
         return;
     }
-    id info=[inArguments[0] JSONValue];
+    //id info=[inArguments[0] JSONValue];
+    ACArgsUnpack(NSDictionary *info, ACJSFunctionRef*func) = inArguments;
      NSMutableDictionary *result=[NSMutableDictionary dictionary];
     NSInteger type = [self convertFromString:[info objectForKey:@"conversationType"]];
     if ([self.RCManager.SDK respondsToSelector:@selector(setConversationToTop:targetId:isTop:)]) {
       BOOL state =  [self.RCManager.SDK setConversationToTop:type targetId:[info objectForKey:@"targetId"] isTop:[[info objectForKey:@"isTop"] boolValue]];
         result[@"resultCode"] = state?@(0):@(1);
         [self.RCManager callBackJsonWithFunction:@"cbSetConversationToTop" parameter:result];
+        [func executeWithArguments:ACArgsPack(state?@(0):@(1))];
     }else{
         result[@"resultCode"] = @(2);
         [self.RCManager callBackJsonWithFunction:@"cbSetConversationToTop" parameter:result];
+         [func executeWithArguments:ACArgsPack(@(2))];
 
     }
     
@@ -452,7 +484,8 @@
     if(inArguments.count<1){
         return;
     }
-    id info=[inArguments[0] JSONValue];
+    //id info=[inArguments[0] JSONValue];
+     ACArgsUnpack(NSDictionary *info, ACJSFunctionRef*func) = inArguments;
      NSInteger type = [self convertFromString:[info objectForKey:@"conversationType"]];
      NSMutableDictionary *result=[NSMutableDictionary dictionary];
     if ([self.RCManager.SDK respondsToSelector:@selector(getConversationNotificationStatus:targetId:success:error:)]) {
@@ -460,13 +493,16 @@
             result[@"resultCode"] = @(0);
             result[@"status"] = @(nStatus);
             [self.RCManager callBackJsonWithFunction:@"cbGetConversationNotificationStatus" parameter:result];
+            [func executeWithArguments:ACArgsPack(@(0),@(nStatus))];
         } error:^(RCErrorCode status) {
             result[@"resultCode"] = @(1);
             [self.RCManager callBackJsonWithFunction:@"cbGetConversationNotificationStatus" parameter:result];
+            [func executeWithArguments:ACArgsPack(@(1))];
         }];
     } else {
         result[@"resultCode"] = @(2);
         [self.RCManager callBackJsonWithFunction:@"cbGetConversationNotificationStatus" parameter:result];
+        [func executeWithArguments:ACArgsPack(@(2))];
     }
     
 }
@@ -474,7 +510,8 @@
     if(inArguments.count<1){
         return;
     }
-    id info=[inArguments[0] JSONValue];
+    //id info=[inArguments[0] JSONValue];
+    ACArgsUnpack(NSDictionary *info, ACJSFunctionRef*func) = inArguments;
     NSInteger type = [self convertFromString:[info objectForKey:@"conversationType"]];
     NSMutableDictionary *result=[NSMutableDictionary dictionary];
      __weak typeof(self) Myself = self;
@@ -483,15 +520,16 @@
             result[@"resultCode"] = @(0);
             result[@"status"] = @(nStatus);
             [Myself.RCManager callBackJsonWithFunction:@"cbSetConversationNotificationStatus" parameter:result];
-
+            [func executeWithArguments:ACArgsPack(@(0),@(nStatus))];
         } error:^(RCErrorCode status) {
             result[@"resultCode"] = @(1);
             [Myself.RCManager callBackJsonWithFunction:@"cbSetConversationNotificationStatus" parameter:result];
-
+             [func executeWithArguments:ACArgsPack(@(1))];
         }];
     } else {
         result[@"resultCode"] = @(2);
         [self.RCManager callBackJsonWithFunction:@"cbSetConversationNotificationStatus" parameter:result];
+        [func executeWithArguments:ACArgsPack(@(2))];
     }
     
 }
@@ -500,12 +538,14 @@
     if(inArguments.count<1){
         return;
     }
-    id info=[inArguments[0] JSONValue];
+    //id info=[inArguments[0] JSONValue];
+    ACArgsUnpack(NSDictionary *info, ACJSFunctionRef*func) = inArguments;
     NSInteger type = [self convertFromString:[info objectForKey:@"conversationType"]];
     NSString *targetId = [info objectForKey:@"targetId"];
     NSMutableDictionary *dic = [NSMutableDictionary dictionary];
     NSMutableArray *result=[NSMutableArray array];
-    NSArray *array = [self.RCManager.SDK getLatestMessages:type targetId:targetId count:[[info objectForKey:@"count"] intValue]];
+    if ([self.RCManager.SDK respondsToSelector:@selector(getLatestMessages:targetId:count:)]) {
+        NSArray *array = [self.RCManager.SDK getLatestMessages:type targetId:targetId count:[[info objectForKey:@"count"] intValue]];
         for (RCMessage *message in array) {
             dic[@"extra"] = message.extra;
             dic[@"conversationType"] = [self convertFromInteger:message.conversationType];
@@ -564,7 +604,12 @@
             dic[@"content"] = content;
             [result addObject:dic];
         }
-         [self.RCManager callBackJsonWithFunction:@"cbGetLatestMessages" parameter:result];
+        [self.RCManager callBackJsonWithFunction:@"cbGetLatestMessages" parameter:result];
+        [func executeWithArguments:ACArgsPack(@(0),result)];
+    }else{
+         [func executeWithArguments:ACArgsPack(@(1))];
+    }
+    
     
 }
 
@@ -572,11 +617,13 @@
     if(inArguments.count<1){
         return;
     }
-    id info=[inArguments[0] JSONValue];
+    //id info=[inArguments[0] JSONValue];
+    ACArgsUnpack(NSDictionary *info, ACJSFunctionRef*func) = inArguments;
     NSInteger type = [self convertFromString:[info objectForKey:@"conversationType"]];
     NSString *targetId = [info objectForKey:@"targetId"];
     NSMutableDictionary *dic = [NSMutableDictionary dictionary];
     NSMutableArray *result=[NSMutableArray array];
+    if ([self.RCManager.SDK respondsToSelector:@selector(getHistoryMessages:targetId:oldestMessageId:count:)]) {
         NSArray *array = [self.RCManager.SDK getHistoryMessages:type targetId:targetId oldestMessageId:[[info objectForKey:@"oldestMessageId"] floatValue] count:[[info objectForKey:@"count"] intValue]];
         for (RCMessage *message in array) {
             
@@ -637,13 +684,19 @@
             dic[@"content"] = content;
             [result addObject:dic];
         }
-       [self.RCManager callBackJsonWithFunction:@"cbGetHistoryMessages" parameter:result];
+        [self.RCManager callBackJsonWithFunction:@"cbGetHistoryMessages" parameter:result];
+        [func executeWithArguments:ACArgsPack(@(0),result)];
+    } else {
+        [func executeWithArguments:ACArgsPack(@(1))];
+    }
+    
 }
 -(void)deleteMessages:(NSMutableArray *)inArguments{
     if(inArguments.count<1){
         return;
     }
-    id info=[inArguments[0] JSONValue];
+    //id info=[inArguments[0] JSONValue];
+    ACArgsUnpack(NSDictionary *info, ACJSFunctionRef*func) = inArguments;
     NSMutableDictionary *result=[NSMutableDictionary dictionary];
     NSArray *array = [info objectForKey:@"messageIds"];
     NSMutableArray *arrays = [NSMutableArray array];
@@ -655,16 +708,19 @@
         BOOL state = [self.RCManager.SDK deleteMessages:[arrays copy]];
         result[@"resultCode"] = state?@(0):@(1);
          [self.RCManager callBackJsonWithFunction:@"cbDeleteMessages" parameter:result];
+        [func executeWithArguments:ACArgsPack(state?@(0):@(1))];
     }else{
          result[@"resultCode"] = @(2);
          [self.RCManager callBackJsonWithFunction:@"cbDeleteMessages" parameter:result];
+        [func executeWithArguments:ACArgsPack(@(2))];
     }
 }
 -(void)clearMessages:(NSMutableArray *)inArguments{// 清空某一会话的所有聊天消息记录
     if(inArguments.count<1){
         return;
     }
-    id info=[inArguments[0] JSONValue];
+    //id info=[inArguments[0] JSONValue];
+    ACArgsUnpack(NSDictionary *info, ACJSFunctionRef*func) = inArguments;
     NSInteger type = [self convertFromString:[info objectForKey:@"conversationType"]];
     NSString *targetId = [info objectForKey:@"targetId"];
     NSMutableDictionary *result=[NSMutableDictionary dictionary];
@@ -672,9 +728,11 @@
       BOOL state = [self.RCManager.SDK clearMessages:type targetId:targetId];
         result[@"resultCode"] = state?@(0):@(1);
         [self.RCManager callBackJsonWithFunction:@"cbClearMessages" parameter:result];
+        [func executeWithArguments:ACArgsPack(state?@(0):@(1))];
     } else {
         result[@"resultCode"] = @(2);
         [self.RCManager callBackJsonWithFunction:@"cbClearMessages" parameter:result];
+        [func executeWithArguments:ACArgsPack(@(2))];
 
     }
 }
@@ -687,7 +745,8 @@
     if(inArguments.count<1){
         exit(0);
     }
-    id info=[inArguments[0] JSONValue];
+    //id info=[inArguments[0] JSONValue];
+    ACArgsUnpack(NSDictionary *info) = inArguments;
     NSInteger type = [self convertFromString:[info objectForKey:@"conversationType"]];
     NSString *targetId = [info objectForKey:@"targetId"];
     NSInteger num = [self.RCManager.SDK getUnreadCount:type targetId:targetId];
@@ -698,7 +757,8 @@
     if(inArguments.count<1){
          exit(0);
     }
-    id info=[inArguments[0] JSONValue];
+    //id info=[inArguments[0] JSONValue];
+    ACArgsUnpack(NSDictionary *info) = inArguments;
     NSArray *array = [info objectForKey:@"conversationTypes"];
     NSInteger num = [self.RCManager.SDK getUnreadCount:array];
     return @(num);
@@ -708,7 +768,8 @@
     if(inArguments.count<1){
         exit(0);
     }
-    id info=[inArguments[0] JSONValue];
+    //id info=[inArguments[0] JSONValue];
+    ACArgsUnpack(NSDictionary *info) = inArguments;
     NSMutableDictionary *result=[NSMutableDictionary dictionary];
     NSInteger  messageId = [[info objectForKey:@"messageId"] integerValue];
     NSInteger receivedStatus = [[info objectForKey:@"receivedStatus"] integerValue];
@@ -722,7 +783,7 @@
 //    if(inArguments.count<1){
 //        return;
 //    }
-//    id info=[inArguments[0] JSONValue];
+//    id info=[inArguments[0] ac_JSONValue];
 //    NSInteger type = [self convertFromString:[info objectForKey:@"conversationType"]];
 //    NSString *targetId = [info objectForKey:@"targetId"];
 //    NSMutableDictionary *result=[NSMutableDictionary dictionary];
@@ -1146,14 +1207,14 @@
 //图片\音频的保存路径
 - (NSString *)getImageSaveDirPath{
     NSString *tempPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/apps"];
-    NSString *wgtTempPath=[tempPath stringByAppendingPathComponent:[EUtility brwViewWidgetId:self.meBrwView]];
+    NSString *wgtTempPath=[tempPath stringByAppendingPathComponent:self.webViewEngine.widget.widgetId]; //[EUtility brwViewWidgetId:self.meBrwView]];
     
     return [wgtTempPath stringByAppendingPathComponent:@"uexRongCloud"];
 }
 //图片\音频的保存路径
 - (NSString *)getAudioSaveDirPath{
     NSString *tempPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"Documents/apps"];
-    NSString *wgtTempPath=[tempPath stringByAppendingPathComponent:[EUtility brwViewWidgetId:self.meBrwView]];
+    NSString *wgtTempPath=[tempPath stringByAppendingPathComponent:self.webViewEngine.widget.widgetId];
     
     return [wgtTempPath stringByAppendingPathComponent:@"uexRongCloud"];
 }

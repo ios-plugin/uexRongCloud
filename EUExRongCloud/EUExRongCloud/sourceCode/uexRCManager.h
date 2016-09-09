@@ -7,8 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "JSON.h"
-#import "EUExBase.h"
 #import "EUtility.h"
 #import "EUExRongCloud.h"
 #import <RongIMLib/RongIMLib.h>
@@ -19,7 +17,7 @@
 @property (nonatomic,strong) RCIMClient *SDK;
 
 + (instancetype)sharedInstance;
--(void) initWithAppKey:(NSString *)appKey;
+-(void) initWithAppKey:(NSString *)appKey Function:(ACJSFunctionRef*)func;
 -(void)callBackJsonWithFunction:(NSString *)functionName parameter:(id)obj;
 
 

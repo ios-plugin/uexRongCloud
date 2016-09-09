@@ -10,6 +10,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "EUtility.h"
+#import <AppCanKit/AppCanKit.h>
 #define UEX_LOCALIZEDSTRING(...) [EUtility uexPlugin:@"uexRongCloud" localizedString:__VA_ARGS__,nil]
 #endif
 #endif /* PrefixHeader_pch */

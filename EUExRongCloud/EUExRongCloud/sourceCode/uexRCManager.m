@@ -29,18 +29,22 @@
     return self;
 }
 #pragma mark -registerApp
--(void) initWithAppKey:(NSString *)appKey{
+-(void) initWithAppKey:(NSString *)appKey Function:(ACJSFunctionRef *)func{
     NSMutableDictionary *result=[NSMutableDictionary dictionary];
+    NSNumber *error = @(1);
+    NSString *des = nil;
     if([appKey length]){
             _SDK=[RCIMClient sharedRCIMClient];
             [_SDK initWithAppKey:appKey];
             [self addDelegate];
             result[@"result"] = @(YES);
+            error = @(0);
     }
     else{
         result[@"result"] =@(NO);
+        des = @"appKey is nil";
     }
-    
+    [func executeWithArguments:ACArgsPack(error,des)];
     [self callBackJsonWithFunction:@"cbInit" parameter:result];
 }
 -(void)addDelegate{
@@ -124,9 +128,10 @@
 #pragma mark - CallBack Method
 const static NSString *kPluginName=@"uexRongCloud";
 -(void)callBackJsonWithFunction:(NSString *)functionName parameter:(id)obj{
-    NSString *jsonStr = [NSString stringWithFormat:@"if(%@.%@ != null){%@.%@(%@);}",kPluginName,functionName,kPluginName,functionName,[obj JSONFragment]];
+//    NSString *jsonStr = [NSString stringWithFormat:@"if(%@.%@ != null){%@.%@(%@);}",kPluginName,functionName,kPluginName,functionName,[obj ac_JSONFragment]];
     dispatch_async(self.callBackDispatchQueue, ^(void){
-        [EUtility evaluatingJavaScriptInRootWnd:jsonStr];
+        //[EUtility evaluatingJavaScriptInRootWnd:jsonStr];
+        [AppCanRootWebViewEngine() callbackWithFunctionKeyPath:functionName arguments:ACArgsPack(obj)];
     });
     
 }
@@ -163,7 +168,7 @@ const static NSString *kPluginName=@"uexRongCloud";
 //图片\音频的保存路径
 - (NSString *)getSaveDirPath{
     NSString *tempPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/apps"];
-    NSString *wgtTempPath=[tempPath stringByAppendingPathComponent:[EUtility brwViewWidgetId:self.meBrwView]];
+    NSString *wgtTempPath=[tempPath stringByAppendingPathComponent:self.webViewEngine.widget.widgetId];
     
     return [wgtTempPath stringByAppendingPathComponent:@"uexRongCloud"];
 }
